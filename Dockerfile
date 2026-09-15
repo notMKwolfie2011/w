@@ -26,7 +26,7 @@ WORKDIR /app
 # EXPOSE the web port Render will use to connect to you
 EXPOSE 8080
 
-# Create a startup script to link the servers together automatically
+# Create an automated startup script that forces the game to launch on screen
 RUN echo '#!/bin/bash\n\
 Xvfb :1 -screen 0 1280x720x24 &\n\
 sleep 2\n\
@@ -34,6 +34,8 @@ x11vnc -display :1 -nopw -listen localhost -forever &\n\
 sleep 2\n\
 gdown --id 1ZEXSpme3gLxrY6uXMAECyiHtRdKCokNl -O game.zip\n\
 unzip game.zip -d ./fnaf_game\n\
+sleep 2\n\
+DISPLAY=:1 wine32 /app/fnaf_game/*.exe -opengl &\n\
 websockify --web=/usr/share/novnc/ 8080 localhost:5900\n\
 ' > /app/start.sh && chmod +x /app/start.sh
 
